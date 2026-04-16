@@ -7,12 +7,12 @@ Language: Python
 
 Main Files Identified:
 
-- cli.py 
-- models.py 
-- storage.py 
-- task_manager.py 
-- task_parser.py 
-- task_priority.py 
+- cli.py → likely handles user commands
+- models.py → defines task structure
+- storage.py → handles saving/loading tasks
+- task_manager.py → main logic controller
+- task_parser.py → converts text into tasks
+- task_priority.py → handles priority logic
 
 Initial Thoughts:
 
