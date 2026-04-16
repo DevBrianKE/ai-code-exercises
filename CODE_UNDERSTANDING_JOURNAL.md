@@ -115,3 +115,96 @@ It combines multiple real-world signals into a single score, then sorts tasks ba
 ## Key Learning Outcome
 
 I learned that real-world systems rarely rely on a single variable for decision-making. Instead, they combine multiple signals into a scoring system to make more intelligent decisions.
+
+
+# Part 3: Mapping Data Flow and State Management
+
+## Feature: Marking a Task as Complete
+
+### Entry Point (User Action)
+
+The process starts in `cli.py` when the user runs:
+
+status <task_id> done
+
+
+This triggers:
+
+task_manager.update_task_status(task_id, "done")
+
+
+---
+
+## Application Flow (Step-by-step)
+
+- User enters command in CLI  
+- `cli.py` parses command using `argparse`  
+- `TaskManager.update_task_status()` is called  
+- `TaskStorage.get_task(task_id)` retrieves task from memory  
+- If status is DONE:
+  - `task.mark_as_done()` is executed  
+- Task state is updated:
+  - `status → DONE`
+  - `completed_at → current time`
+  - `updated_at → current time`
+- `TaskStorage.save()` writes updated data to JSON file  
+
+---
+
+## State Changes During Completion
+
+When a task is marked as DONE:
+
+- `status → TaskStatus.DONE`
+- `completed_at → datetime.now()`
+- `updated_at → datetime.now()`
+
+---
+
+## Data Flow Diagram (Text Version)
+User CLI Command
+→ CLI Parser (argparse)
+→ TaskManager.update_task_status()
+→ TaskStorage.get_task()
+→ Task.mark_as_done()
+→ TaskStorage.save()
+→ JSON file updated
+
+
+---
+
+## Persistence Layer
+
+- Tasks are stored in `tasks.json`
+- `TaskEncoder` converts Task objects → JSON
+- `TaskDecoder` converts JSON → Task objects  
+
+This ensures tasks persist between program runs.
+
+---
+
+## Potential Points of Failure
+
+- Invalid task ID → task not found  
+- Wrong status input → enum conversion error  
+- File read/write errors in storage  
+- Corrupted JSON file  
+- Incorrect date handling  
+
+---
+
+## Key Insight
+
+Task completion is not just a status change — it is a state mutation, timestamp update, and persistence operation.
+
+---
+
+## Final Understanding
+
+The system follows this architecture:
+
+CLI → Manager → Storage → Model → Storage (save)
+
+
+
+
