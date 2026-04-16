@@ -22,6 +22,8 @@ This looks like a command-line task manager that:
 - Stores tasks
 - Handles priorities
 
+# Part 1: DUnderstanding a Specific Feature
+
 ### Task Class (models.py)
 
 Purpose:
@@ -44,3 +46,72 @@ Key Observations:
 - Status starts as TODO.
 - Timestamps are tracked automatically.
 - Priority and status likely use enums.
+
+
+# Part 2: Deepening Understanding of Task Prioritization System
+
+## Initial Understanding
+
+Before closely analyzing the code, I thought task prioritization was based mainly on a simple rule like:
+
+- High priority tasks always come first  
+- Due dates might slightly affect ordering  
+- Tasks were likely sorted using a single attribute like priority level  
+
+I also assumed the system might be using basic sorting logic rather than a calculated scoring system.
+
+---
+
+## What I Discovered After Examining the Code
+
+After analyzing `task_priority.py`, I discovered that prioritization is not based on a single attribute.
+
+Instead:
+
+- Each task is assigned a numerical score  
+- The score is calculated using multiple factors:
+  - Priority level (LOW → URGENT)
+  - Due date proximity (overdue, due today, soon)
+  - Status (DONE reduces score, REVIEW reduces score slightly)
+  - Tags (e.g. blocker, critical increase score)
+  - Recent updates (recently updated tasks get a boost)
+
+Then:
+
+- Tasks are sorted using this score (highest first)
+- The system dynamically ranks tasks based on combined logic
+
+---
+
+## Key Insights from Guided Questions
+
+Through deeper questioning and analysis, I learned that:
+
+- Priority is not absolute — it is weighted with other factors  
+- A task with lower priority can outrank a higher one if it is overdue or tagged as critical  
+- The system is designed to reflect “real-world urgency,” not just labels  
+- Sorting happens after score calculation, not during task creation  
+- The logic is centralized in one scoring function, making it reusable  
+
+---
+
+## Misconceptions I Had (Corrected)
+
+- I initially thought priority alone determined order → Incorrect  
+- I thought sorting was simple attribute-based sorting → Incorrect  
+- I assumed due date was the main factor → Incorrect  
+- I did not realize status (DONE/REVIEW) actively reduces priority score  
+
+---
+
+## Final Understanding
+
+Task prioritization in this system is multi-factor scoring-based ranking, not simple sorting.
+
+It combines multiple real-world signals into a single score, then sorts tasks based on that computed importance.
+
+---
+
+## Key Learning Outcome
+
+I learned that real-world systems rarely rely on a single variable for decision-making. Instead, they combine multiple signals into a scoring system to make more intelligent decisions.
